@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "TODO",
+  "description": "TODO",
+  "minimum_chrome_version": "54",
+  "version": "1.0.0",
+  "background": {
+    "scripts": ["main.js"],
+    "persistent": false
+  },
+  "icons": {},
+  "permissions": [
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://todo.com/*"
+      ],
+      "js": ["main.js"]
+    }
+  ]
+}
