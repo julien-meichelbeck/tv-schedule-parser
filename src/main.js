@@ -1,33 +1,30 @@
 import $ from 'jquery'
 
-const SEPARATOR = ' ; '
-
-const download = (filename, text) => {
-  const element = document.createElement('a')
-  element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`)
-  element.setAttribute('download', filename)
-
-  element.style.display = 'none'
-  document.body.appendChild(element)
-
-  element.click()
-
-  document.body.removeChild(element)
-}
-
 const CONFIG = {
   hbo: {
     name: 'HBO',
+    channelMapping: {},
     channelNames: '[class="bands/LinearSchedule--channelName"]',
     channelLanes: '[class="bands/LinearSchedule--channelLane"]',
     program: 'li',
     programName: '[class="bands/LinearSchedule--programName"]',
     programDate: '[class="bands/LinearSchedule--airingTime"]',
-    currentDay: '[class="bands/schedule/DaySelector--selected"]',
+    currentDay: '[class="bands/schedule/DaySelector--daySelectorWrapper"] .undefined',
     titleFormatter: title => title.text(),
   },
   mnet: {
     name: 'M-NET',
+    channelMapping: {
+      101: 'Channel 101',
+      104: 'Movies Premiere 104',
+      105: 'Movies Smile 105',
+      106: 'Movies Action+ 106',
+      110: 'Movies Action',
+      111: 'Movies All Stars',
+      115: 'M City',
+      139: 'Movies Zone',
+      900: 'Binge',
+    },
     channelNames: '.bar-key-channel',
     channelLanes: '.bar-row:not(.bar-row-top)',
     program: '.bar',
@@ -44,9 +41,12 @@ const CONFIG = {
   },
 }
 
-const downloadCurrentDay = config => {
-  const rows = [['Chaîne', 'Nom du programme', 'Date'].join(SEPARATOR)]
-  const channels = $(config.channelNames).map((index, channelName) => channelName.innerText)
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const config = window.location.href.includes('m-net') ? CONFIG.mnet : CONFIG.hbo
+  const rows = []
+  const channels = $(config.channelNames).map(
+    (index, channelName) => config.channelMapping[channelName.innerText] || channelName.innerText
+  )
   $(config.channelLanes).each((index, channel) => {
     $(channel)
       .find(config.program)
@@ -55,14 +55,9 @@ const downloadCurrentDay = config => {
         const date = $(program)
           .find(config.programDate)
           .text()
-        if (title) rows.push([channels[index], title, date].join(SEPARATOR))
+        if (title) rows.push([channels[index], title, date])
       })
   })
-  const dayName = $(config.currentDay).text()
-  download(`${config.name}-${dayName}`, rows.join('\n'))
-}
-
-chrome.runtime.onMessage.addListener(() => {
-  const config = window.location.href.includes('m-net') ? CONFIG.mnet : CONFIG.hbo
-  downloadCurrentDay(config)
+  const day = $(config.currentDay).text()
+  sendResponse({ rows, day })
 })

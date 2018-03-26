@@ -1,9 +1,47 @@
+body {
+  width: 500px;
+  max-height: 700px;
+  font-size: 14px;
+}
+
 button {
-  background-color: #0984e3;
   height: 30px;
   min-width: 200px;
+  font-size: 16px;
+  display: block;
   border-radius: 4px;
   color: white;
   text-transform: uppercase;
   border: 0px;
+  margin: 14px auto;
+}
+
+.btn-primary {
+  background-color: #0984e3;
+}
+
+.btn-secondary {
+  background-color: #fdcb6e
+}
+
+.btn-group {
+  text-align: center;
+}
+
+.btn-group button {
+  display: inline-block;
+  margin: 14px;
+}
+
+table, tr, td {
+  border: 1px solid grey;
+}
+
+td {
+  padding: 5px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
 }
