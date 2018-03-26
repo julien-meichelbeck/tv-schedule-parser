@@ -1,23 +1,23 @@
 {
   "manifest_version": 2,
-  "name": "TODO",
-  "description": "TODO",
+  "name": "tv-schedule-parser",
+  "description": "tv-schedule-parser",
   "minimum_chrome_version": "54",
   "version": "1.0.0",
-  "background": {
-    "scripts": ["main.js"],
-    "persistent": false
-  },
   "icons": {},
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
   "permissions": [
     "tabs"
   ],
   "content_scripts": [
     {
       "matches": [
-        "http://todo.com/*"
+        "https://*/*"
       ],
-      "js": ["main.js"]
+      "js": ["main.js"],
+      "run_at": "document_end"
     }
   ]
 }

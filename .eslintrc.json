@@ -20,6 +20,7 @@
     "no-new-func": "warn",
     "no-new-wrappers": "warn",
     "no-param-reassign": "off",
+    "arrow-parens": "off",
     "no-prototype-builtins": "warn",
     "no-restricted-properties": "warn",
     "no-restricted-syntax": "warn",
