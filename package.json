@@ -8,20 +8,20 @@
     "test": "npm run lint && npm run unit",
     "unit": "mocha",
     "watch": "mocha -w",
-    "lint": "eslint --max-warnings 9 --cache ."
+    "lint": "eslint --max-warnings 9 --cache .",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/julien-meichelbeck/bootstrap-chrome-extension.git"
+    "url": "git+https://github.com/julien-meichelbeck/tv-schedule-parser.git"
   },
   "bugs": {
-    "url": "https://github.com/julien-meichelbeck/bootstrap-chrome-extension/issues"
+    "url": "https://github.com/julien-meichelbeck/tv-schedule-parser/issues"
   },
-  "homepage": "https://github.com/julien-meichelbeck/bootstrap-chrome-extension#readme",
+  "homepage": "https://github.com/julien-meichelbeck/tv-schedule-parser#readme",
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.3.2",
     "babel-plugin-module-resolver": "^2.5.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-stage-1": "^6.22.0",
@@ -35,15 +35,16 @@
     "eslint-plugin-react": "^6.10.0",
     "jsdom": "^9.11.0",
     "mocha": "^3.2.0",
-    "raven-js": "^3.11.0",
     "sinon": "^1.17.7",
-    "webpack": "^2.2.1"
+    "webpack": "^4.18.0"
   },
   "dependencies": {
+    "babel-loader": "7",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "jquery": "^3.1.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "webpack-cli": "^3.1.0"
   }
 }

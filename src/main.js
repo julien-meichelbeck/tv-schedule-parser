@@ -4,16 +4,19 @@ const CONFIG = {
   hbo: {
     name: 'HBO',
     channelMapping: {},
+    channelFilter: () => true,
     channelNames: '[class="bands/LinearSchedule--channelName"]',
     channelLanes: '[class="bands/LinearSchedule--channelLane"]',
     program: 'li',
     programName: '[class="bands/LinearSchedule--programName"]',
     programDate: '[class="bands/LinearSchedule--airingTime"]',
     currentDay: '[class="bands/schedule/DaySelector--daySelectorWrapper"] .undefined',
-    titleFormatter: title => title.text(),
+    dateFormatter: date => date.text(),
+    titleFormatter: title => title.text()
   },
   mnet: {
     name: 'M-NET',
+    channelFilter: () => true,
     channelMapping: {
       101: 'Channel 101',
       104: 'Movies Premiere 104',
@@ -23,7 +26,7 @@ const CONFIG = {
       111: 'Movies All Stars',
       115: 'M City',
       139: 'Movies Zone',
-      900: 'Binge',
+      900: 'Binge'
     },
     channelNames: '.bar-key-channel',
     channelLanes: '.bar-row:not(.bar-row-top)',
@@ -31,33 +34,56 @@ const CONFIG = {
     programName: '.bar-title',
     programDate: '.bar-meta',
     currentDay: '.tv-guide-swiper-container .swiper-slide.swiper-slide-active',
+    dateFormatter: date => date.text(),
     titleFormatter: title =>
       title
         .clone()
         .children()
         .remove()
         .end()
-        .text(),
+        .text()
   },
+  startimes: {
+    name: 'StarTimes',
+    channelMapping: {
+      127: 'Novela E',
+      617: 'Novela F',
+      615: 'Novela F Plus'
+    },
+    channelFilter: name => name && name.includes('Novela'),
+    channelNames: '.pic',
+    channelLanes: '.list .inner .item',
+    program: '.box',
+    programName: 'h3',
+    programDate: 'h3',
+    currentDay: 'li.now',
+    titleFormatter: title => title.text().split(' | ')[0],
+    dateFormatter: date => date.text().split(' | ')[1]
+  }
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const config = window.location.href.includes('m-net') ? CONFIG.mnet : CONFIG.hbo
+  const config = window.location.href.includes('m-net')
+    ? CONFIG.mnet
+    : window.location.href.includes('startimestv') ? CONFIG.startimes : CONFIG.hbo
+
   const rows = []
   const channels = $(config.channelNames).map(
-    (index, channelName) => config.channelMapping[channelName.innerText] || channelName.innerText
+    (index, channelName) =>
+      config.channelMapping[channelName.innerText.trim()] || channelName.innerText.trim()
   )
+
   $(config.channelLanes).each((index, channel) => {
     $(channel)
       .find(config.program)
       .each((i, program) => {
         const title = config.titleFormatter($(program).find(config.programName))
-        const date = $(program)
-          .find(config.programDate)
-          .text()
+        const date = config.dateFormatter($(program).find(config.programDate))
+
         if (title) rows.push([channels[index], title, date])
       })
   })
+
   const day = $(config.currentDay).text()
-  sendResponse({ rows, day })
+  sendResponse({ rows: rows.filter(row => config.channelFilter(row[0])), day })
 })

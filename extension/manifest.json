@@ -8,16 +8,12 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-  "permissions": [
-    "tabs"
-  ],
+  "permissions": ["tabs"],
   "content_scripts": [
     {
-      "matches": [
-        "https://*/*"
-      ],
+      "matches": ["*://*/*"],
       "js": ["main.js"],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ]
 }

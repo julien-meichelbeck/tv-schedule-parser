@@ -11,7 +11,7 @@ const App = class extends React.Component {
       chrome.tabs.sendMessage(tab.id, {}, ({ rows, day }) =>
         this.setState({
           day,
-          rows: [...this.state.rows, ...rows],
+          rows: [...this.state.rows, ...rows]
         })
       )
     })
@@ -56,7 +56,9 @@ const App = class extends React.Component {
             </button>
             <table>
               {this.state.rows.map(columns => (
-                <tr key={columns.join('-')}>{columns.map(column => <td key={column}>{column}</td>)}</tr>
+                <tr key={columns.join('-')}>
+                  {columns.map(column => <td key={column}>{column}</td>)}
+                </tr>
               ))}
             </table>
             <button className="btn-primary" onClick={this.extractFromDom}>
