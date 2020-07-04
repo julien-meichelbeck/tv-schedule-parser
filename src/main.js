@@ -14,6 +14,28 @@ const CONFIG = {
     dateFormatter: (date) => date.text(),
     titleFormatter: (title) => title.text(),
   },
+  dstv: {
+    channelFilter: () => true,
+    channelMapping: {
+      101: 'Channel 101',
+      104: 'Movies Premiere 104',
+      105: 'Movies Smile 105',
+      106: 'Movies Action+ 106',
+      110: 'Movies Action',
+      111: 'Movies All Stars',
+      115: 'M City',
+      139: 'Movies Zone',
+      900: 'Binge',
+    },
+    channelNames: '.channel-number',
+    channelLanes: '.channel-row',
+    program: '.event',
+    programName: '.event-title',
+    programDate: '.event-time',
+    currentDay: '.active.contentBlock-act',
+    dateFormatter: (date) => date.text().trim(),
+    titleFormatter: (title) => title.text().trim(),
+  },
   mnet: {
     name: 'M-NET',
     channelFilter: () => true,
@@ -55,19 +77,22 @@ const CONFIG = {
     dateFormatter: (date) => date.text().split(' | ')[1],
   },
 }
-
+chrome.runtime.connect()
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Content script loaded !')
   const config = window.location.href.includes('m-net')
     ? CONFIG.mnet
     : window.location.href.includes('startimestv')
     ? CONFIG.startimes
+    : window.location.href.includes('dstv')
+    ? CONFIG.dstv
     : CONFIG.hbo
 
-  const rows = []
   const channels = $(config.channelNames).map(
     (index, channelName) => config.channelMapping[channelName.innerText.trim()] || channelName.innerText.trim()
   )
 
+  const rows = []
   $(config.channelLanes).each((index, channel) => {
     $(channel)
       .find(config.program)
